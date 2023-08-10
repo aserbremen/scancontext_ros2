@@ -47,4 +47,19 @@ ament_target_dependencies(${PROJECT_NAME}
   pcl_conversions
 )
 
+# Install include directory
+install(DIRECTORY include
+  DESTINATION include
+)
+
+# ament_export_targets(${PROJECT_NAME} HAS_LIBRARY_TARGET)
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+
+install(TARGETS ${PROJECT_NAME}
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  DESTINATION lib/${PROJECT_NAME}
+)
+
 ament_package()
