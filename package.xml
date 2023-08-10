@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>scancontext_ros2</name>
+  <version>0.0.0</version>
+  <description>The scancontext_ros2 package</description>
+
+  <maintainer email="serov@uni-bremen.de">Andreas Serov</maintainer>
+
+  <license>BSD</license>
+
+  <!-- ROS2: Dependencies needed to compile this package -->
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend> 
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

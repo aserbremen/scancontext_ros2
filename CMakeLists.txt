@@ -1,0 +1,50 @@
+project(scancontext_ros2)
+cmake_minimum_required(VERSION 3.5) # ROS2 minimum version
+
+# Find required non ROS2 packages
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+
+message(STATUS "PCL_INCLUDE_DIRS:" ${PCL_INCLUDE_DIRS})
+message(STATUS "PCL_LIBRARY_DIRS:" ${PCL_LIBRARY_DIRS})
+message(STATUS "PCL_DEFINITIONS:" ${PCL_DEFINITIONS})
+
+# ROS 2 integration, enable c++14
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+# Use -std=c++14 instead of -std=gnu++14
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Enable compile optimizations
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -fsee -fomit-frame-pointer -fno-signed-zeros -fno-math-errno -funroll-loops")
+
+# Enable debug flags (use if you want to debug in gdb)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g3 -Wall -Wuninitialized -fno-omit-frame-pointer")
+
+# Find necessary ROS2 packages
+find_package(ament_cmake REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(pcl_conversions REQUIRED)
+
+# Include local hdl_graph_slam headers
+include_directories(include)
+include_directories(
+  ${PCL_INCLUDE_DIRS}
+)
+
+add_library(${PROJECT_NAME} SHARED
+  src/scancontext_ros2/Scancontext.cpp
+)
+# Link non ROS2 libraries
+target_link_libraries(${PROJECT_NAME}
+ ${PCL_LIBRARIES}
+)
+# Link ROS2 libraries
+ament_target_dependencies(${PROJECT_NAME}
+  rclcpp
+  pcl_conversions
+)
+
+ament_package()
