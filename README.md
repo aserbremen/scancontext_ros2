@@ -2,6 +2,8 @@
 
 # Scan Context
 
+This fork implements a ROS2 node for the Scan Context algorithm. It is based on the original [Scan Context](https://github.com/irapkaist/scancontext/).
+
 ## NEWS (Oct, 2021): Scan Context++ is accepted for T-RO!
 - Our extended study named Scan Context++ is accepted for T-RO. 
   - Scan Context++: Structural Place Recognition Robust to Rotation and Lateral Variations in Urban Environments
