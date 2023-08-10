@@ -12,11 +12,6 @@
 
 #include <Eigen/Dense>
 
-#include <cv_bridge/cv_bridge.h>
-#include <opencv2/core/eigen.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/opencv.hpp>
-
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
