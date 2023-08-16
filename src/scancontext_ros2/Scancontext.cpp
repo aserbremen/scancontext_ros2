@@ -3,6 +3,25 @@
 // namespace SC2
 // {
 
+SCManager::SCManager(rclcpp::Node::SharedPtr _node) {
+    // Set parameters
+    LIDAR_HEIGHT = _node->get_parameter("sc_lidar_height").as_double();
+    PC_NUM_RING = _node->get_parameter("sc_pc_num_ring").as_int();
+    PC_NUM_SECTOR = _node->get_parameter("sc_pc_num_sector").as_int();
+    PC_MAX_RADIUS = _node->get_parameter("sc_pc_max_radius").as_double();
+    PC_UNIT_SECTORANGLE = 360.0 / double(PC_NUM_SECTOR);
+    PC_UNIT_RINGGAP = PC_MAX_RADIUS / double(PC_NUM_RING);
+    // tree
+    NUM_EXCLUDE_RECENT = _node->get_parameter("sc_num_exclude_recent").as_int();
+    NUM_CANDIDATES_FROM_TREE = _node->get_parameter("sc_num_candidates_from_tree").as_int();
+    // loop thres
+    SEARCH_RATIO = _node->get_parameter("sc_search_ratio").as_double();
+    SC_DIST_THRES = _node->get_parameter("sc_dist_thres").as_double();
+    // config
+    TREE_MAKING_PERIOD_ = _node->get_parameter("sc_tree_making_period").as_int();
+
+} // SCManager
+
 void coreImportTest(void) { cout << "scancontext lib is successfully imported." << endl; } // coreImportTest
 
 float rad2deg(float radians) { return radians * 180.0 / M_PI; }
