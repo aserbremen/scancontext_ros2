@@ -136,7 +136,7 @@ std::pair<double, int> SCManager::distanceBtnScanContext(MatrixXd &_sc1, MatrixX
 
 } // distanceBtnScanContext
 
-MatrixXd SCManager::makeScancontext(pcl::PointCloud<SCPointType> &_scan_down) {
+MatrixXd SCManager::makeScancontext(const pcl::PointCloud<SCPointType> &_scan_down) {
     TicToc t_making_desc;
 
     int num_pts_scan_down = _scan_down.points.size();
@@ -206,7 +206,7 @@ MatrixXd SCManager::makeSectorkeyFromScancontext(Eigen::MatrixXd &_desc) {
     return variant_key;
 } // SCManager::makeSectorkeyFromScancontext
 
-void SCManager::makeAndSaveScancontextAndKeys(pcl::PointCloud<SCPointType> &_scan_down) {
+void SCManager::makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, uint64_t global_id) {
     Eigen::MatrixXd sc = makeScancontext(_scan_down); // v1
     Eigen::MatrixXd ringkey = makeRingkeyFromScancontext(sc);
     Eigen::MatrixXd sectorkey = makeSectorkeyFromScancontext(sc);
@@ -216,7 +216,7 @@ void SCManager::makeAndSaveScancontextAndKeys(pcl::PointCloud<SCPointType> &_sca
     polarcontext_invkeys_.push_back(ringkey);
     polarcontext_vkeys_.push_back(sectorkey);
     polarcontext_invkeys_mat_.push_back(polarcontext_invkey_vec);
-
+    global_ids_.push_back(global_id);
     // cout <<polarcontext_vkeys_.size() << endl;
 
 } // SCManager::makeAndSaveScancontextAndKeys
@@ -232,6 +232,7 @@ std::pair<int, float> SCManager::detectLoopClosureID(void) {
      */
     if (polarcontext_invkeys_mat_.size() < NUM_EXCLUDE_RECENT + 1) {
         std::pair<int, float> result{loop_id, 0.0};
+        std::cout << "[Too few keyframes] abort scan context loop detection." << std::endl;
         return result; // Early return
     }
 
@@ -293,6 +294,7 @@ std::pair<int, float> SCManager::detectLoopClosureID(void) {
 
         // std::cout.precision(3);
         cout << "[Loop found] Nearest distance: " << min_dist << " btn " << polarcontexts_.size() - 1 << " and " << nn_idx << "." << endl;
+        cout << "[Loop found] between global id: " << global_ids_.back() << " and " << global_ids_[nn_idx] << "." << endl;
         cout << "[Loop found] yaw diff: " << nn_align * PC_UNIT_SECTORANGLE << " deg." << endl;
     } else {
         std::cout.precision(3);

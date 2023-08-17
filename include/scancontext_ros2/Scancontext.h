@@ -54,7 +54,7 @@ public:
     SCManager() = default; // reserving data space (of std::vector) could be considered. but the descriptor is lightweight so don't care.
     SCManager(rclcpp::Node::SharedPtr _node);
 
-    Eigen::MatrixXd makeScancontext(pcl::PointCloud<SCPointType> &_scan_down);
+    Eigen::MatrixXd makeScancontext(const pcl::PointCloud<SCPointType> &_scan_down);
     Eigen::MatrixXd makeRingkeyFromScancontext(Eigen::MatrixXd &_desc);
     Eigen::MatrixXd makeSectorkeyFromScancontext(Eigen::MatrixXd &_desc);
 
@@ -63,7 +63,7 @@ public:
     std::pair<double, int> distanceBtnScanContext(MatrixXd &_sc1, MatrixXd &_sc2); // "D" (eq 6) in the original paper (IROS 18)
 
     // User-side API
-    void makeAndSaveScancontextAndKeys(pcl::PointCloud<SCPointType> &_scan_down);
+    void makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, uint64_t global_id);
     std::pair<int, float> detectLoopClosureID(void); // int: nearest node index, float: relative yaw
 
 public:
@@ -99,6 +99,7 @@ public:
     std::vector<Eigen::MatrixXd> polarcontexts_;
     std::vector<Eigen::MatrixXd> polarcontext_invkeys_;
     std::vector<Eigen::MatrixXd> polarcontext_vkeys_;
+    std::vector<uint64_t> global_ids_;
 
     KeyMat polarcontext_invkeys_mat_;
     KeyMat polarcontext_invkeys_to_search_;
