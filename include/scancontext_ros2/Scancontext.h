@@ -63,7 +63,7 @@ public:
     std::pair<double, int> distanceBtnScanContext(MatrixXd &_sc1, MatrixXd &_sc2); // "D" (eq 6) in the original paper (IROS 18)
 
     // User-side API
-    void makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, uint64_t global_id);
+    void makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, const std::string &human_readable_id);
     std::pair<int, float> detectLoopClosureID(void); // int: nearest node index, float: relative yaw
 
 public:
@@ -99,7 +99,7 @@ public:
     std::vector<Eigen::MatrixXd> polarcontexts_;
     std::vector<Eigen::MatrixXd> polarcontext_invkeys_;
     std::vector<Eigen::MatrixXd> polarcontext_vkeys_;
-    std::vector<uint64_t> global_ids_;
+    std::vector<std::string> human_readable_ids_;
 
     KeyMat polarcontext_invkeys_mat_;
     KeyMat polarcontext_invkeys_to_search_;

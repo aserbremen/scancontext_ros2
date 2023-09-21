@@ -3,6 +3,32 @@
 // namespace SC2
 // {
 
+#ifndef _COLORS_
+#define _COLORS_
+
+/* FOREGROUND */
+#define RST "\x1B[0m"
+#define KRED "\x1B[31m"
+#define KGRN "\x1B[32m"
+#define KYEL "\x1B[33m"
+#define KBLU "\x1B[34m"
+#define KMAG "\x1B[35m"
+#define KCYN "\x1B[36m"
+#define KWHT "\x1B[37m"
+
+#define FRED(x) KRED x RST
+#define FGRN(x) KGRN x RST
+#define FYEL(x) KYEL x RST
+#define FBLU(x) KBLU x RST
+#define FMAG(x) KMAG x RST
+#define FCYN(x) KCYN x RST
+#define FWHT(x) KWHT x RST
+
+#define BOLD(x) "\x1B[1m" x RST
+#define UNDL(x) "\x1B[4m" x RST
+
+#endif /* _COLORS_ */
+
 SCManager::SCManager(rclcpp::Node::SharedPtr _node) {
     // Set parameters
     LIDAR_HEIGHT = _node->get_parameter("sc_lidar_height").as_double();
@@ -206,7 +232,7 @@ MatrixXd SCManager::makeSectorkeyFromScancontext(Eigen::MatrixXd &_desc) {
     return variant_key;
 } // SCManager::makeSectorkeyFromScancontext
 
-void SCManager::makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, uint64_t global_id) {
+void SCManager::makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType> &_scan_down, const std::string &human_readable_id) {
     Eigen::MatrixXd sc = makeScancontext(_scan_down); // v1
     Eigen::MatrixXd ringkey = makeRingkeyFromScancontext(sc);
     Eigen::MatrixXd sectorkey = makeSectorkeyFromScancontext(sc);
@@ -216,7 +242,7 @@ void SCManager::makeAndSaveScancontextAndKeys(const pcl::PointCloud<SCPointType>
     polarcontext_invkeys_.push_back(ringkey);
     polarcontext_vkeys_.push_back(sectorkey);
     polarcontext_invkeys_mat_.push_back(polarcontext_invkey_vec);
-    global_ids_.push_back(global_id);
+    human_readable_ids_.push_back(human_readable_id);
     // cout <<polarcontext_vkeys_.size() << endl;
 
 } // SCManager::makeAndSaveScancontextAndKeys
@@ -293,13 +319,17 @@ std::pair<int, float> SCManager::detectLoopClosureID(void) {
         loop_id = nn_idx;
 
         // std::cout.precision(3);
-        cout << "[Loop found] Nearest distance: " << min_dist << " btn " << polarcontexts_.size() - 1 << " and " << nn_idx << "." << endl;
-        cout << "[Loop found] between global id: " << global_ids_.back() << " and " << global_ids_[nn_idx] << "." << endl;
-        cout << "[Loop found] yaw diff: " << nn_align * PC_UNIT_SECTORANGLE << " deg." << endl;
+        cout << FGRN("[Loop found] Nearest distance: ") << min_dist << " btn " << polarcontexts_.size() - 1 << " and " << nn_idx << "."
+             << endl;
+        cout << FGRN("[Loop found] between global id: ") << human_readable_ids_.back() << " and " << human_readable_ids_[nn_idx] << "."
+             << endl;
+        cout << FGRN("[Loop found] yaw diff: ") << nn_align * PC_UNIT_SECTORANGLE << " deg." << endl;
     } else {
         std::cout.precision(3);
-        cout << "[Not loop] Nearest distance: " << min_dist << " btn " << polarcontexts_.size() - 1 << " and " << nn_idx << "." << endl;
-        cout << "[Not loop] yaw diff: " << nn_align * PC_UNIT_SECTORANGLE << " deg." << endl;
+        cout << FRED("[Not loop] Nearest distance: ") << min_dist << " btn " << polarcontexts_.size() - 1 << " and " << nn_idx << " btn "
+             << human_readable_ids_.back() << " and "
+             << " " << human_readable_ids_[nn_align] << "." << endl;
+        cout << FRED("[Not loop] yaw diff: ") << nn_align * PC_UNIT_SECTORANGLE << " deg." << endl;
     }
 
     // To do: return also nn_align (i.e., yaw diff)
